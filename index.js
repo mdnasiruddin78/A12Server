@@ -77,7 +77,6 @@ async function run() {
 
     // get all users
     app.get('/users', verifyToken, verifyAdmin, async (req, res) => {
-      console.log(req.headers)
       const result = await userCollection.find().toArray();
       res.send(result)
     })
@@ -108,6 +107,14 @@ async function run() {
       }
       const result = await userCollection.updateOne(filter, updatedDoc)
       res.send(result)
+    })
+
+    // admin delete a user 
+    app.delete('/users/:id',verifyToken, verifyAdmin,async(req,res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await userCollection.deleteOne(query)
+        res.send(result)
     })
 
     // Send a ping to confirm a successful connection
