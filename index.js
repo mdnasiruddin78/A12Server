@@ -1,7 +1,8 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const jwt = require('jsonwebtoken');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 const app = express()
 
@@ -42,6 +43,19 @@ async function run() {
     // get all users
     app.get('/users',async(req,res) => {
       const result = await userCollection.find().toArray();
+      res.send(result)
+    })
+
+    // make a admin
+    app.patch('/users/admin/:id',async(req,res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const updatedDoc = {
+        $set: {
+          role: 'admin',
+        }
+      }
+      const result = await userCollection.updateOne(filter,updatedDoc)
       res.send(result)
     })
 
