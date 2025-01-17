@@ -26,6 +26,7 @@ async function run() {
     // await client.connect();
 
     const userCollection = client.db("blogsOnlineDb").collection("users");
+    const announceCollection = client.db("blogsOnlineDb").collection("announcement");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -110,11 +111,24 @@ async function run() {
     })
 
     // admin delete a user 
-    app.delete('/users/:id',verifyToken, verifyAdmin,async(req,res) => {
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id)}
-        const result = await userCollection.deleteOne(query)
-        res.send(result)
+    app.delete('/users/:id', verifyToken, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await userCollection.deleteOne(query)
+      res.send(result)
+    })
+
+    // announcement upload
+    app.post('/announcement', async (req, res) => {
+      const notification = req.body;
+      const result = await announceCollection.insertOne(notification)
+      res.send(result)
+    })
+
+    // announcement read
+    app.get('/announcement',async(req,res) => {
+      const result = await announceCollection.find().toArray()
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
