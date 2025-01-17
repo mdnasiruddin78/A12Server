@@ -119,14 +119,14 @@ async function run() {
     })
 
     // announcement upload
-    app.post('/announcement', async (req, res) => {
+    app.post('/announcement',verifyToken, verifyAdmin, async (req, res) => {
       const notification = req.body;
       const result = await announceCollection.insertOne(notification)
       res.send(result)
     })
 
     // announcement read
-    app.get('/announcement',async(req,res) => {
+    app.get('/announcement',verifyToken, verifyAdmin,async(req,res) => {
       const result = await announceCollection.find().toArray()
       res.send(result)
     })
