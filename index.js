@@ -126,7 +126,7 @@ async function run() {
     })
 
     // announcement read
-    app.get('/announcement',verifyToken, verifyAdmin,async(req,res) => {
+    app.get('/announcement',async(req,res) => {
       const result = await announceCollection.find().toArray()
       res.send(result)
     })
