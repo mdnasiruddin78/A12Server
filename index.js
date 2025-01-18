@@ -27,6 +27,7 @@ async function run() {
 
     const userCollection = client.db("blogsOnlineDb").collection("users");
     const announceCollection = client.db("blogsOnlineDb").collection("announcement");
+    const postCollection = client.db("blogsOnlineDb").collection("userPost");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -128,6 +129,13 @@ async function run() {
     // announcement read
     app.get('/announcement',async(req,res) => {
       const result = await announceCollection.find().toArray()
+      res.send(result)
+    })
+
+    // users add post
+    app.post('/addPost',async(req,res) => {
+      const userPost = req.body;
+      const result = await postCollection.insertOne(userPost);
       res.send(result)
     })
 
