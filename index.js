@@ -139,6 +139,12 @@ async function run() {
       res.send(result)
     })
 
+    // user add data get
+    app.get('/addPost',async(req,res) => {
+      const result = await postCollection.find().toArray()
+      res.send(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
