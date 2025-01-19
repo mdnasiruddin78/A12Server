@@ -6,7 +6,12 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: [
+      'http://localhost:5173',
+      ],
+  credentials: true,
+}))
 app.use(express.json())
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.faeap.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -142,6 +147,22 @@ async function run() {
     // user add data get
     app.get('/addPost',async(req,res) => {
       const result = await postCollection.find().toArray()
+      res.send(result)
+    })
+
+    // cardDetails by id
+    app.get('/addPost/:id',async(req,res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await postCollection.findOne(query)
+      res.send(result)
+    })
+
+    // add post data get by email
+    app.get('/addPost/:email',async(req,res) => {
+      const email = req.params.email;
+      const query = {email: email}
+      const result = await postCollection.find(query).toArray()
       res.send(result)
     })
 
