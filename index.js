@@ -9,6 +9,8 @@ const app = express()
 app.use(cors({
   origin: [
       'http://localhost:5173',
+      'https://forum-online-server.vercel.app',
+      'https://zingy-sunshine-2e5cd3.netlify.app',
       ],
   credentials: true,
 }))
@@ -183,7 +185,7 @@ async function run() {
     })
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
