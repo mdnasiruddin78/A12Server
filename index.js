@@ -158,11 +158,27 @@ async function run() {
       res.send(result)
     })
 
+    // add post data get by email only(3)
+    app.get('/emailLimit/:email',async(req,res) => {
+      const email = req.params.email;
+      const query = {email: email}
+      const result = await postCollection.find(query).sort({'_id': -1}).limit(3).toArray()
+      res.send(result)
+    })
+
     // add post data get by email
-    app.get('/addPost/:email',async(req,res) => {
+    app.get('/addEmail/:email',async(req,res) => {
       const email = req.params.email;
       const query = {email: email}
       const result = await postCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    // delete post by email
+    app.delete('/addEmail/:id',async(req,res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await postCollection.deleteOne(query)
       res.send(result)
     })
 
