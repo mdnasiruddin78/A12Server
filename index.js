@@ -136,7 +136,7 @@ async function run() {
 
     // announcement read
     app.get('/announcement',async(req,res) => {
-      const result = await announceCollection.find().toArray()
+      const result = await announceCollection.find().sort({'_id': -1}).toArray()
       res.send(result)
     })
 
