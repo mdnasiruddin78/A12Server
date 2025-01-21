@@ -193,7 +193,7 @@ async function run() {
     })
 
     // admin add tags get
-    app.get('/addTags',verifyToken,async(req,res) => {
+    app.get('/addTags',async(req,res) => {
       const result = await tagCollection.find().toArray()
       res.send(result)
     })
