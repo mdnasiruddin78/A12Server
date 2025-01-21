@@ -35,6 +35,7 @@ async function run() {
     const userCollection = client.db("blogsOnlineDb").collection("users");
     const announceCollection = client.db("blogsOnlineDb").collection("announcement");
     const postCollection = client.db("blogsOnlineDb").collection("userPost");
+    const tagCollection = client.db("blogsOnlineDb").collection("tags");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -181,6 +182,19 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)}
       const result = await postCollection.deleteOne(query)
+      res.send(result)
+    })
+
+    // admin add tags post 
+    app.post('/addTags',verifyToken,async(req,res) => {
+      const tags = req.body;
+      const result = await tagCollection.insertOne(tags)
+      res.send(result)
+    })
+
+    // admin add tags get
+    app.get('/addTags',verifyToken,async(req,res) => {
+      const result = await tagCollection.find().toArray()
       res.send(result)
     })
 
