@@ -8,10 +8,10 @@ const app = express()
 
 app.use(cors({
   origin: [
-      'http://localhost:5173',
-      'https://forum-online-server.vercel.app',
-      'https://zingy-sunshine-2e5cd3.netlify.app',
-      ],
+    'http://localhost:5173',
+    'https://forum-online-server.vercel.app',
+    'https://zingy-sunshine-2e5cd3.netlify.app',
+  ],
   credentials: true,
 }))
 app.use(express.json())
@@ -129,88 +129,97 @@ async function run() {
     })
 
     // announcement upload
-    app.post('/announcement',verifyToken, verifyAdmin, async (req, res) => {
+    app.post('/announcement', verifyToken, verifyAdmin, async (req, res) => {
       const notification = req.body;
       const result = await announceCollection.insertOne(notification)
       res.send(result)
     })
 
     // announcement read
-    app.get('/announcement',async(req,res) => {
-      const result = await announceCollection.find().sort({'_id': -1}).toArray()
+    app.get('/announcement', async (req, res) => {
+      const result = await announceCollection.find().sort({ '_id': -1 }).toArray()
       res.send(result)
     })
 
     // users add post
-    app.post('/addPost',async(req,res) => {
+    app.post('/addPost', async (req, res) => {
       const userPost = req.body;
       const result = await postCollection.insertOne(userPost);
       res.send(result)
     })
 
     // user add data get
-    app.get('/addPost',async(req,res) => {
-      const result = await postCollection.find().sort({'_id': -1}).toArray()
+    app.get('/addPost', async (req, res) => {
+      const filter = req.query.filter
+      const search = req.query.search
+      let query = {
+        title: {
+          $regex: search,
+          $options: 'i',
+        }
+      }
+      if (filter) query.tag = filter
+      const result = await postCollection.find(query).toArray()
       res.send(result)
     })
 
     // cardDetails by id
-    app.get('/addPost/:id',async(req,res) => {
+    app.get('/addPost/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await postCollection.findOne(query)
       res.send(result)
     })
 
     // add post data get by email only(3)
-    app.get('/emailLimit/:email',verifyToken,async(req,res) => {
+    app.get('/emailLimit/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
-      const query = {email: email}
-      const result = await postCollection.find(query).sort({'_id': -1}).limit(3).toArray()
+      const query = { email: email }
+      const result = await postCollection.find(query).sort({ '_id': -1 }).limit(3).toArray()
       res.send(result)
     })
 
     // add post data get by email
-    app.get('/addEmail/:email',verifyToken,async(req,res) => {
+    app.get('/addEmail/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
-      const query = {email: email}
+      const query = { email: email }
       const result = await postCollection.find(query).toArray()
       res.send(result)
     })
 
     // delete post by email
-    app.delete('/addEmail/:id',verifyToken,async(req,res) => {
+    app.delete('/addEmail/:id', verifyToken, async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const result = await postCollection.deleteOne(query)
       res.send(result)
     })
 
     // admin add tags post 
-    app.post('/addTags',verifyToken,async(req,res) => {
+    app.post('/addTags', verifyToken, async (req, res) => {
       const tags = req.body;
       const result = await tagCollection.insertOne(tags)
       res.send(result)
     })
 
     // admin add tags get
-    app.get('/addTags',async(req,res) => {
+    app.get('/addTags', async (req, res) => {
       const result = await tagCollection.find().toArray()
       res.send(result)
     })
 
     // comment post 
-    app.post('/allComment',async(req,res) => {
+    app.post('/allComment', async (req, res) => {
       const commentInfo = req.body;
       const result = await commentCollection.insertOne(commentInfo)
       res.send(result)
     })
 
-    app.get('/allComment/:postId',async(req,res) => {
-        const postId = req.params.postId;
-        const query = {postId: postId}
-        const result = await commentCollection.find(query).toArray()
-        res.send(result)
+    app.get('/allComment/:postId', async (req, res) => {
+      const postId = req.params.postId;
+      const query = { postId: postId }
+      const result = await commentCollection.find(query).toArray()
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
