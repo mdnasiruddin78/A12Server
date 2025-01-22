@@ -150,16 +150,16 @@ async function run() {
 
     // user add data get
     app.get('/addPost', async (req, res) => {
-      const filter = req.query.filter
-      const search = req.query.search
-      let query = {
-        title: {
-          $regex: search,
-          $options: 'i',
-        }
-      }
-      if (filter) query.tag = filter
-      const result = await postCollection.find(query).toArray()
+      // const filter = req.query.filter
+      // const search = req.query.search
+      // let query = {
+      //   title: {
+      //     $regex: search,
+      //     $options: 'i',
+      //   }
+      // }
+      // if (filter) query.tag = filter
+      const result = await postCollection.find().sort({ '_id': -1 }).toArray()
       res.send(result)
     })
 
@@ -219,6 +219,20 @@ async function run() {
       const postId = req.params.postId;
       const query = { postId: postId }
       const result = await commentCollection.find(query).toArray()
+      res.send(result)
+    })
+
+    // votecoutn patch route
+    app.patch('/voteCount/:id',async(req,res) => {
+      const id = req.params.id;
+      const voteInfo = req.body;
+      const filter = {_id: new ObjectId(id)}
+      const updatedDoc = {
+        $set: {
+          vote: voteInfo.vote
+        }
+      }
+      const result = await postCollection.updateOne(filter,updatedDoc)
       res.send(result)
     })
 
