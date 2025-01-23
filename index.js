@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const stripe = require('stripe')(process.env.STRIPTE_SECRET_KEY)
 const port = process.env.PORT || 5000
 const app = express()
 
@@ -150,15 +151,14 @@ async function run() {
 
     // user add data get
     app.get('/addPost', async (req, res) => {
-      const search = req.query.search
-      let query = {
-        tag: {
-          $regex: search,
-          $options: 'i',
-        }
-      }
-      // if (search) query.tag = search
-      const result = await postCollection.find(query).sort({ '_id': -1 }).toArray()
+      // const search = req.query.search
+      // let query = {
+      //   tag: {
+      //     $regex: search,
+      //     $options: 'i',
+      //   }
+      // }
+      const result = await postCollection.find().sort({ '_id': -1 }).toArray()
       res.send(result)
     })
 
@@ -238,6 +238,23 @@ async function run() {
       }
       const result = await postCollection.updateOne(filter, updatedDoc)
       res.send(result)
+    })
+
+    // payment intent
+    app.post('/create-payment-intent',async(req,res) => {
+      const {price} = req.body;
+      const amount = parseInt(price * 100)
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+      
     })
 
     // Send a ping to confirm a successful connection
