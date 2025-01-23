@@ -223,16 +223,16 @@ async function run() {
     })
 
     // votecoutn patch route
-    app.patch('/voteCount/:id',async(req,res) => {
+    app.patch('/voteCount/:id', async (req, res) => {
       const id = req.params.id;
       const voteInfo = req.body;
-      const filter = {_id: new ObjectId(id)}
+      const filter = { _id: new ObjectId(id) }
       const updatedDoc = {
         $set: {
           vote: voteInfo.vote
         }
       }
-      const result = await postCollection.updateOne(filter,updatedDoc)
+      const result = await postCollection.updateOne(filter, updatedDoc)
       res.send(result)
     })
 
