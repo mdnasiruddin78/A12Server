@@ -150,16 +150,15 @@ async function run() {
 
     // user add data get
     app.get('/addPost', async (req, res) => {
-      // const filter = req.query.filter
-      // const search = req.query.search
-      // let query = {
-      //   title: {
-      //     $regex: search,
-      //     $options: 'i',
-      //   }
-      // }
-      // if (filter) query.tag = filter
-      const result = await postCollection.find().sort({ '_id': -1 }).toArray()
+      const search = req.query.search
+      let query = {
+        tag: {
+          $regex: search,
+          $options: 'i',
+        }
+      }
+      // if (search) query.tag = search
+      const result = await postCollection.find(query).sort({ '_id': -1 }).toArray()
       res.send(result)
     })
 
@@ -212,6 +211,11 @@ async function run() {
     app.post('/allComment', async (req, res) => {
       const commentInfo = req.body;
       const result = await commentCollection.insertOne(commentInfo)
+      res.send(result)
+    })
+
+    app.get('/allComent', async (req, res) => {
+      const result = await commentCollection.find().toArray()
       res.send(result)
     })
 
