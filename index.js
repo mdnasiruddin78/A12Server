@@ -38,6 +38,7 @@ async function run() {
     const postCollection = client.db("blogsOnlineDb").collection("userPost");
     const tagCollection = client.db("blogsOnlineDb").collection("tags");
     const commentCollection = client.db("blogsOnlineDb").collection("comment");
+    const paymentCollection = client.db("blogsOnlineDb").collection("payments");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -241,8 +242,8 @@ async function run() {
     })
 
     // payment intent
-    app.post('/create-payment-intent',async(req,res) => {
-      const {price} = req.body;
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body;
       const amount = parseInt(price * 100)
 
       const paymentIntent = await stripe.paymentIntents.create({
@@ -254,7 +255,26 @@ async function run() {
       res.send({
         clientSecret: paymentIntent.client_secret
       })
-      
+
+    })
+
+    app.post('/payments', async (req, res) => {
+      const payment = req.body;
+      const paymentResult = await paymentCollection.insertOne(payment);
+      const userUpdate = await userCollection.updateOne({ email: payment.email }, {
+        $set: {
+          status: 'member',
+        }
+      })
+      res.send(paymentResult);
+    })
+
+    // member get by email
+    app.get('/payments/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email }
+      const result = await paymentCollection.find(query).toArray()
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
