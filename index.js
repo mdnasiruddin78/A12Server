@@ -215,14 +215,14 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/allComent', async (req, res) => {
+    app.get('/allComment', async (req, res) => {
       const result = await commentCollection.find().toArray()
       res.send(result)
     })
 
     app.get('/allComment/:postId', async (req, res) => {
       const postId = req.params.postId;
-      const query = { postId: postId }
+      const query = {postId: postId}
       const result = await commentCollection.find(query).toArray()
       res.send(result)
     })
