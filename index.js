@@ -101,6 +101,14 @@ async function run() {
       res.send(result)
     })
 
+    // user get by email
+    app.get('/singleUser/:email',verifyToken,async(req,res) => {
+      const email = req.params.email;
+      const query = {email: email}
+      const result = await userCollection.findOne(query)
+      res.send(result)
+    })
+
     // isAdmin route
     app.get('/users/admin/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
@@ -284,6 +292,7 @@ async function run() {
       const userUpdate = await userCollection.updateOne({ email: payment.email }, {
         $set: {
           status: 'member',
+          badge: 'Gold',
         }
       })
       res.send(paymentResult);
