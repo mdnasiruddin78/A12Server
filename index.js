@@ -90,7 +90,14 @@ async function run() {
 
     // get all users
     app.get('/users', verifyToken, verifyAdmin, async (req, res) => {
-      const result = await userCollection.find().toArray();
+      const search = req.query.search
+      let query = {
+        email: {
+          $regex: search || '',
+          $options: 'i',
+        }
+      }
+      const result = await userCollection.find(query).toArray();
       res.send(result)
     })
 
@@ -152,14 +159,14 @@ async function run() {
 
     // user add data get
     app.get('/addPost', async (req, res) => {
-      // const search = req.query.search
-      // let query = {
-      //   tag: {
-      //     $regex: search,
-      //     $options: 'i',
-      //   }
-      // }
-      const result = await postCollection.find().sort({ '_id': -1 }).toArray()
+      const search = req.query.search
+      let query = {
+        tag: {
+          $regex: search || '',
+          $options: 'i',
+        }
+      }
+      const result = await postCollection.find(query).sort({ '_id': -1 }).toArray()
       res.send(result)
     })
 
