@@ -219,7 +219,20 @@ async function run() {
     app.post('/allComment', async (req, res) => {
       const commentInfo = req.body;
       const result = await commentCollection.insertOne(commentInfo)
-      res.send(result)
+      const id = req.body.postId
+      console.log(id)
+      const main = req.body.commentCount
+      const query = {
+        _id: new ObjectId(id)
+      }
+      const updatedDocument = {
+        $set: {
+          commentCount: main
+        }
+      }
+      const patchResult = await postCollection.updateOne(query, updatedDocument)
+      // kag baki
+      res.send({ result, patchResult })
     })
 
     app.get('/allComment', async (req, res) => {
@@ -229,7 +242,7 @@ async function run() {
 
     app.get('/allComment/:postId', async (req, res) => {
       const postId = req.params.postId;
-      const query = {postId: postId}
+      const query = { postId: postId }
       const result = await commentCollection.find(query).toArray()
       res.send(result)
     })
