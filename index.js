@@ -40,6 +40,7 @@ async function run() {
     const commentCollection = client.db("blogsOnlineDb").collection("comment");
     const paymentCollection = client.db("blogsOnlineDb").collection("payments");
     const reportCollection = client.db("blogsOnlineDb").collection("reportFeedback");
+    const restrictionCollection = client.db("blogsOnlineDb").collection("restriction");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -103,9 +104,9 @@ async function run() {
     })
 
     // user get by email
-    app.get('/singleUser/:email',verifyToken,async(req,res) => {
+    app.get('/singleUser/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
-      const query = {email: email}
+      const query = { email: email }
       const result = await userCollection.findOne(query)
       res.send(result)
     })
@@ -307,17 +308,31 @@ async function run() {
     })
 
     // report feedback comment
-    app.post('/feedback',verifyToken,async(req,res) => {
+    app.post('/feedback', verifyToken, async (req, res) => {
       const repot = req.body;
       const result = await reportCollection.insertOne(repot)
       res.send(result)
     })
 
-     // report feedback comment get
-     app.get('/feedback',verifyToken,verifyAdmin,async(req,res) => {
+    // report feedback comment get
+    app.get('/feedback', verifyToken, verifyAdmin, async (req, res) => {
       const result = await reportCollection.find().toArray()
       res.send(result)
-     })
+    })
+
+    app.get('/filter/:email',verifyToken,verifyAdmin,async(req,res) => {
+      const reportEmail = req.params.email;
+      const query = {reportEmail: reportEmail}
+      const result = await reportCollection.findOne(query)
+      res.send(result)
+    })
+
+    // restriction message post
+    app.post('/restrictionMessage', verifyToken,verifyAdmin, async (req, res) => {
+      const message = req.body;
+      const result = await restrictionCollection.insertOne(message)
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
