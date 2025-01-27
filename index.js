@@ -39,6 +39,7 @@ async function run() {
     const tagCollection = client.db("blogsOnlineDb").collection("tags");
     const commentCollection = client.db("blogsOnlineDb").collection("comment");
     const paymentCollection = client.db("blogsOnlineDb").collection("payments");
+    const reportCollection = client.db("blogsOnlineDb").collection("reportFeedback");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -228,7 +229,6 @@ async function run() {
       const commentInfo = req.body;
       const result = await commentCollection.insertOne(commentInfo)
       const id = req.body.postId
-      console.log(id)
       const main = req.body.commentCount
       const query = {
         _id: new ObjectId(id)
@@ -305,6 +305,19 @@ async function run() {
       const result = await paymentCollection.find(query).toArray()
       res.send(result)
     })
+
+    // report feedback comment
+    app.post('/feedback',verifyToken,async(req,res) => {
+      const repot = req.body;
+      const result = await reportCollection.insertOne(repot)
+      res.send(result)
+    })
+
+     // report feedback comment get
+     app.get('/feedback',verifyToken,verifyAdmin,async(req,res) => {
+      const result = await reportCollection.find().toArray()
+      res.send(result)
+     })
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
