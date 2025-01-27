@@ -263,7 +263,7 @@ async function run() {
       const filter = { _id: new ObjectId(id) }
       const updatedDoc = {
         $set: {
-          vote: voteInfo.vote
+          vote: voteInfo.vote,
         }
       }
       const result = await postCollection.updateOne(filter, updatedDoc)
