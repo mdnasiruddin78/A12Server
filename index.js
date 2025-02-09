@@ -11,7 +11,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://forum-online-server.vercel.app',
-    'https://zingy-sunshine-2e5cd3.netlify.app',
+    'https://a12-blog-space-online.netlify.app',
   ],
   credentials: true,
 }))
@@ -320,38 +320,38 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/filter/:email',verifyToken,verifyAdmin,async(req,res) => {
+    app.get('/filter/:email', verifyToken, verifyAdmin, async (req, res) => {
       const reportEmail = req.params.email;
-      const query = {reportEmail: reportEmail}
+      const query = { reportEmail: reportEmail }
       const result = await reportCollection.findOne(query)
       res.send(result)
     })
 
     // restriction message post
-    app.post('/restrictionMessage', verifyToken,verifyAdmin, async (req, res) => {
+    app.post('/restrictionMessage', verifyToken, verifyAdmin, async (req, res) => {
       const message = req.body;
       const result = await restrictionCollection.insertOne(message)
       res.send(result)
     })
 
     // restriction get by email
-    app.get('/message/:email',verifyToken,async(req,res) => {
+    app.get('/message/:email', verifyToken, async (req, res) => {
       const email = req.params.email;
-      const query = {email: email}
+      const query = { email: email }
       const result = await restrictionCollection.find(query).toArray()
       res.send(result)
     })
 
     // button disable
-    app.patch('/allComment/:id',async(req,res) => {
+    app.patch('/allComment/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)}
+      const filter = { _id: new ObjectId(id) }
       const updatedDoc = {
         $set: {
           reaction: req.body.reaction
         }
       }
-      const result = await commentCollection.updateOne(filter,updatedDoc)
+      const result = await commentCollection.updateOne(filter, updatedDoc)
       res.send(result)
     })
 
